@@ -18,7 +18,7 @@ global BASE_PROMPT
 #     except urllib.error.HTTPError as e:
 #         return e.read()
 
-def create_app(comfy_port=8188):
+def create_app(comfy_port=8188, comfy_url="http://127.0.0.1"):
     app = flask.Flask(__name__, instance_relative_config=True)
     app.config['CORS_HEADERS'] = 'Content-Type'
 
@@ -33,7 +33,7 @@ def create_app(comfy_port=8188):
     def get_object_info(class_name=None):
         print("Get Object Info: ", class_name)
         req = urllib.request.Request(
-            f"http://127.0.0.1:{comfy_port}/object_info/{class_name}")
+            f"{comfy_url}:{comfy_port}/object_info/{class_name}")
         try:
             response = urllib.request.urlopen(req)
             return response
@@ -47,13 +47,13 @@ def create_app(comfy_port=8188):
             queries = urllib.parse.urlencode(dict(args))
             try:
                 res = urllib.request.urlopen(
-                    f"http://127.0.0.1:{comfy_port}/{endpoint}?{queries}")
+                    f"{comfy_url}:{comfy_port}/{endpoint}?{queries}")
                 return res
             except urllib.error.HTTPError as e:
                 return e.read()
 
         req = urllib.request.Request(
-            f"http://127.0.0.1:{comfy_port}/{endpoint}")
+            f"{comfy_url}:{comfy_port}/{endpoint}")
         try:
             response = urllib.request.urlopen(req)
             return response
@@ -65,7 +65,7 @@ def create_app(comfy_port=8188):
         payload = flask.request.get_json()
         data = json.dumps(payload).encode('utf-8')
         req = urllib.request.Request(
-            f"http://127.0.0.1:{comfy_port}/{endpoint}", data=data)
+            f"{comfy_url}:{comfy_port}/{endpoint}", data=data)
         try:
             response = urllib.request.urlopen(req)
             return response
